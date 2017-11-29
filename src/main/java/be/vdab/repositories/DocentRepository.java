@@ -24,4 +24,10 @@ public void create(Docent docent, EntityManager em) {
 	
 }
 
+public void delete(long id, EntityManager entityManager) {
+read(id,entityManager) 
+.ifPresent(docent -> entityManager.remove(docent)); 
+}
+
+
 }

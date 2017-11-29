@@ -1,5 +1,6 @@
 package be.vdab.services;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 
 import javax.persistence.EntityManager;
@@ -9,38 +10,73 @@ import be.vdab.filters.JPAFilter;
 import be.vdab.repositories.DocentRepository;
 
 public class DocentService {
-	
+
 	private final DocentRepository docentRepository = new DocentRepository();
-	
-	public Optional<Docent> read (long id){
-		
+
+	public Optional<Docent> read(long id) {
+
 		EntityManager entityManager = JPAFilter.getEntityManager();
-		
+
 		try {
-			
+
 			return docentRepository.read(id, entityManager);
-			
-		}finally {//entityManager.close();
+
+		} finally {// entityManager.close();
 		}
-		
+
 	}
-	
+
 	public void create(Docent docent) {
-		
+
 		EntityManager entityManager = JPAFilter.getEntityManager();
 		entityManager.getTransaction().begin();
 		try {
-			
+
 			docentRepository.create(docent, entityManager);
 			entityManager.getTransaction().commit();
-		}catch(RuntimeException ex) {
-			
+		} catch (RuntimeException ex) {
+
 			entityManager.getTransaction().rollback();
 			throw ex;
-		}finally {entityManager.close();}
+		} finally {
+			entityManager.close();
+		}
+
+	}
+
+	public void delete(long id) {
+
+		EntityManager em = JPAFilter.getEntityManager();
+		em.getTransaction().begin();
+		try {
+
+			docentRepository.delete(id, em);
+			em.getTransaction().commit();
+		}catch(RuntimeException ex) {
+			
+			em.getTransaction().rollback();
+			throw ex;
+		} 
 		
-		
+		finally {
+			
+			em.close();
+		}
+
 	}
 	
+	public void opslag(long id, BigDecimal percentage) {
+		EntityManager entityManager = JPAFilter.getEntityManager();
+		entityManager.getTransaction().begin();
+		try {
+		docentRepository.read(id, entityManager).ifPresent(docent -> docent.opslag(percentage));
+		entityManager.getTransaction().commit();
+		} catch (RuntimeException ex) {
+		entityManager.getTransaction().rollback();
+		throw ex;
+		} finally {
+		entityManager.close();
+		}
+		}
 
 }
