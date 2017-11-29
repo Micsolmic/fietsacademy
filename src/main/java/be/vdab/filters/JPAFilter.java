@@ -13,25 +13,35 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebFilter;
 
+// enkele imports ...
 @WebFilter("*.htm")
 public class JPAFilter implements Filter {
-private static final EntityManagerFactory entityManagerFactory 
-= Persistence.createEntityManagerFactory("fietsacademy"); 
+private static final EntityManagerFactory entityManagerFactory
+= Persistence.createEntityManagerFactory("fietsacademy");
+private static final ThreadLocal<EntityManager> entityManagers 
+= new ThreadLocal<>();
 @Override
 public void init(FilterConfig filterConfig) throws ServletException {
-// geen code nodig hier
 }
+
 @Override
 public void doFilter(ServletRequest request, ServletResponse response,
-FilterChain chain) throws ServletException, IOException {
-request.setCharacterEncoding("UTF-8"); 
-chain.doFilter(request, response);
+FilterChain chain) throws IOException, ServletException { 
+entityManagers.set(entityManagerFactory.createEntityManager()); 
+try {
+request.setCharacterEncoding("UTF-8");
+chain.doFilter(request, response); 
+} finally {
+EntityManager entityManager = entityManagers.get(); 
+entityManager.close(); 
+entityManagers.remove(); 
 }
-@Override
-public void destroy() { 
-entityManagerFactory.close(); 
 }
 public static EntityManager getEntityManager() {
-return entityManagerFactory.createEntityManager();
+return entityManagers.get(); 
+}
+@Override
+public void destroy() {
+entityManagerFactory.close();
 }
 }
