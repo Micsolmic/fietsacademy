@@ -9,12 +9,19 @@ import be.vdab.filters.JPAFilter;
 
 // enkele imports ...
 public class DocentRepository {
-public Optional<Docent> read(long id) {
-EntityManager entityManager = JPAFilter.getEntityManager(); 
-try {
+	
+	
+public Optional<Docent> read(long id, EntityManager eman) {
+EntityManager entityManager = eman; 
+
 return Optional.ofNullable(entityManager.find(Docent.class, id)); 
-} finally {
-entityManager.close();
+
 }
+
+public void create(Docent docent, EntityManager em) {
+	
+	em.persist(docent);
+	
 }
+
 }
