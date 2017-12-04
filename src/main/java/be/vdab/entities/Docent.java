@@ -10,6 +10,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 import be.vdab.enums.Geslacht;
@@ -17,6 +18,7 @@ import be.vdab.enums.Geslacht;
 // enkele imports (vooral uit javax.persistence) ...
 @Entity 
 @Table(name = "docenten") 
+
 public class Docent implements Serializable { 
 private static final long serialVersionUID = 1L;
 @Id 
@@ -137,5 +139,8 @@ BigDecimal factor =
 BigDecimal.ONE.add(percentage.divide(BigDecimal.valueOf(100)));
 wedde = wedde.multiply(factor).setScale(2, RoundingMode.HALF_UP);
 }
+
+
+
 
 }
