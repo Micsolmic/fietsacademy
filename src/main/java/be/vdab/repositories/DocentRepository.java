@@ -49,4 +49,10 @@ return getEntityManager().createQuery(
 AantalDocentenPerWedde.class).getResultList();
 }
 
+public void algemeneOpslag(BigDecimal factor) { 
+ getEntityManager().createNamedQuery("Docent.algemeneOpslag")  
+ .setParameter("factor", factor)
+ .executeUpdate(); 
+ }
+
 }
