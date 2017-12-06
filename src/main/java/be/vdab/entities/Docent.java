@@ -3,14 +3,20 @@ package be.vdab.entities;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
+import javax.persistence.CollectionTable;
+import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.NamedQuery;
+import javax.persistence.JoinColumn;
 import javax.persistence.Table;
 
 import be.vdab.enums.Geslacht;
@@ -30,6 +36,11 @@ private BigDecimal wedde;
 private long rijksRegisterNr;
 @Enumerated(EnumType.STRING)
 private Geslacht geslacht;
+
+@ElementCollection
+@CollectionTable(name = "docentenbijnamen", joinColumns = @JoinColumn(name = "docentid"))
+@Column(name="bijnaam")
+private Set<String> bijnamen;
 // je maakt getters voor de private variabelen, behalve voor serialVersionUID
 
 //Default constructor is vereist voor JPA
@@ -44,7 +55,7 @@ public Docent(String voornaam, String familienaam, BigDecimal wedde,
 	setWedde(wedde);
 	setGeslacht(geslacht);
 	setRijksRegisterNr(rijksRegisterNr);	
-	
+	bijnamen = new HashSet<>();
 }
 
 
@@ -139,6 +150,22 @@ BigDecimal factor =
 BigDecimal.ONE.add(percentage.divide(BigDecimal.valueOf(100)));
 wedde = wedde.multiply(factor).setScale(2, RoundingMode.HALF_UP);
 }
+
+public Set<String> getBijnamen() {
+
+return Collections.unmodifiableSet(bijnamen); 
+}
+
+public void addBijnaam(String bijnaam) {
+bijnamen.add(bijnaam);
+}
+
+public void removeBijnaam(String bijnaam) {
+bijnamen.remove(bijnaam);
+}
+
+
+
 
 
 
