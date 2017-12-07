@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import be.vdab.entities.Docent;
 import be.vdab.enums.Geslacht;
+import be.vdab.services.CampusService;
 import be.vdab.services.DocentService;
 
 /**
@@ -25,10 +26,11 @@ public class ToevoegenServlet extends HttpServlet {
 	private static final String VIEW = "/WEB-INF/JSP/docenten/toevoegen.jsp";
 	private static final String REDIRECT_URL = "%s/docenten/zoeken.htm?id=%d";
 	private final transient DocentService docentService = new DocentService();
+	private final transient CampusService campusService = new CampusService(); 
 	
 	@Override	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-	
+		request.setAttribute("campussen", campusService.findAll()); 
 		request.getRequestDispatcher(VIEW).forward(request, response);
 		
 	}
@@ -70,12 +72,14 @@ public class ToevoegenServlet extends HttpServlet {
 		fouten.put("rijksregisternr", "verkeerde cijfers");
 		}
 		
+		String campusId = request.getParameter("campussen"); if (campusId == null) {   fouten.put("campussen", "verplicht"); } 
 		
 		if (fouten.isEmpty()) {
 		Docent docent =
 		new Docent(voornaam, familienaam, wedde, Geslacht.valueOf(geslacht),
 		rijksRegisterNr);
 		
+		campusService.read(Long.parseLong(campusId)).ifPresent(campus -> docent.setCampus(campus)); 
 		
 		docentService.create(docent);
 		
@@ -83,6 +87,7 @@ public class ToevoegenServlet extends HttpServlet {
 		REDIRECT_URL, request.getContextPath(), docent.getId())));
 		} else {
 		request.setAttribute("fouten", fouten);
+		request.setAttribute("campussen", campusService.findAll()); 
 		request.getRequestDispatcher(VIEW).forward(request, response);
 		}
 		

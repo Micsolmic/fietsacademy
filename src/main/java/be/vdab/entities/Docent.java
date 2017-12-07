@@ -13,10 +13,12 @@ import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import be.vdab.enums.Geslacht;
@@ -34,14 +36,24 @@ private String voornaam;
 private String familienaam;
 private BigDecimal wedde;
 private long rijksRegisterNr;
+
 @Enumerated(EnumType.STRING)
 private Geslacht geslacht;
+
+
+/* many-to-one 
+@ManyToOne(fetch = FetchType.LAZY, optional = false)
+@JoinColumn(name = "campusid")
+private Campus campus;
+*/
 
 @ElementCollection
 @CollectionTable(name = "docentenbijnamen", joinColumns = @JoinColumn(name = "docentid"))
 @Column(name="bijnaam")
 private Set<String> bijnamen;
-// je maakt getters voor de private variabelen, behalve voor serialVersionUID
+
+
+///////Einde Variabelen//////
 
 //Default constructor is vereist voor JPA
 
@@ -164,8 +176,20 @@ public void removeBijnaam(String bijnaam) {
 bijnamen.remove(bijnaam);
 }
 
+/*
+
+public Campus getCampus() {
+	return campus;
+}
+*/
 
 
+
+/*
+public void setCampus(Campus campus) {
+	this.campus = campus;
+}
+*/
 
 
 
