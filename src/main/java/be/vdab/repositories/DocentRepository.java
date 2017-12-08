@@ -3,6 +3,8 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
+import javax.persistence.NoResultException;
+
 import be.vdab.entities.Docent;
 import be.vdab.valueobjects.AantalDocentenPerWedde;
 import be.vdab.valueobjects.VoornaamEnId;
@@ -54,5 +56,16 @@ public void algemeneOpslag(BigDecimal factor) {
  .setParameter("factor", factor)
  .executeUpdate(); 
  }
+
+public Optional<Docent> findByRijksRegisterNr(long rijksRegisterNr) {
+try {
+return Optional.of(getEntityManager()
+.createNamedQuery("Docent.findByRijksRegisterNr", Docent.class)
+.setParameter("rijksRegisterNr", rijksRegisterNr)
+.getSingleResult());
+} catch (NoResultException ex) { 
+return Optional.empty();
+}
+}
 
 }

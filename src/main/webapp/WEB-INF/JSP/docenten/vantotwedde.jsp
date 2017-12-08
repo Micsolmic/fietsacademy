@@ -31,7 +31,7 @@ Geen docenten gevonden
 <c:if test="${not empty docenten}">
 <table>
 <thead>
-<tr><th>Nummer</th><th>Naam</th><th>Wedde</th></tr>
+<tr><th>Nummer</th><th>Naam</th><th>Wedde</th><th>Campus</th></tr>
 </thead>
 <tbody>
 <c:forEach items='${docenten}' var='docent'>
@@ -40,6 +40,7 @@ Geen docenten gevonden
 <td>${docent.naam}</td>
 <td><fmt:formatNumber value='${docent.wedde}'
 minFractionDigits='2' maxFractionDigits='2'/></td>
+<td>${docent.campus.naam}</td>
 </tr>
 </c:forEach>
 </tbody>

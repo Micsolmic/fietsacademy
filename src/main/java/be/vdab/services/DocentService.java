@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Optional;
 
 import be.vdab.entities.Docent;
+import be.vdab.exceptions.DocentBestaatAlException;
 import be.vdab.repositories.DocentRepository;
 import be.vdab.valueobjects.AantalDocentenPerWedde;
 import be.vdab.valueobjects.VoornaamEnId;
@@ -19,15 +20,20 @@ public class DocentService extends AbstractService {
 	}
 
 	public void create(Docent docent) {
+		if (docentRepository.findByRijksRegisterNr(docent.getRijksRegisterNr())
+		.isPresent())
+		throw new DocentBestaatAlException();
+		
 		beginTransaction();
 		try {
-			docentRepository.create(docent);
-			commit();
+		docentRepository.create(docent);
+		commit();
 		} catch (RuntimeException ex) {
-			rollback();
-			throw ex;
+		rollback();
+		throw ex;
 		}
 	}
+
 
 	public void delete(long id) {
 		beginTransaction();
